@@ -1,0 +1,28 @@
+{
+    "name": "semantic-release-drone",
+    "version": "1.0.0",
+    "description": "Sharable configuration for semantic-release running with Drone & generic Git repository",
+    "dependencies": {
+        "@semantic-release/commit-analyzer": "^8.0.0",
+        "@semantic-release/release-notes-generator": "^9.0.0",
+        "@semantic-release/changelog": "^5.0.1",
+        "@semantic-release/exec": "^5.0.0",
+        "@semantic-release/git": "^9.0.0"
+    },
+    "engines": {
+      "node": ">=10.18"
+    },
+    "files": [
+      "index.js"
+    ],
+    "main": "index.js",
+    "peerDependencies": {
+      "semantic-release": ">=15.10.0 <18.0.0"
+    },
+    "scripts": {
+        "semantic-release": "semantic-release",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Minhael Ng",
+    "license": "ISC"
+}
