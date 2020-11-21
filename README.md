@@ -12,7 +12,7 @@ This project references below projects. Thanks to lework, entwico and cenk1cenk2
 * [cenk1cenk2/drone-semantic-release](https://github.com/cenk1cenk2/drone-semantic-release)
 
 # Usage
-1. Set GIT user account with push permission to HEAD branch in Drone pipeline. 
+1. Set GIT user account with push permission of `HEAD` branches in Drone pipeline. 
 2. Add below step to your Drone pipeline to tag next release version:
 ```
 - name: versioning
@@ -25,7 +25,7 @@ This project references below projects. Thanks to lework, entwico and cenk1cenk2
 ```
 
 # Work between plugins
-Version string in [SemVer](https://semver.org/) format is echoed to .tags at root of cloned sources during build. For example, you may publish docker image with tagged version by:
+Version string in [SemVer](https://semver.org/) format is echoed to `.tags` at root of cloned sources during build. For example, you may publish docker image with tagged version by:
 ```
 - name: versioning
   image: [REPO NAME]/drone-semantic-release
@@ -46,7 +46,7 @@ Version string in [SemVer](https://semver.org/) format is echoed to .tags at roo
 ```
 
 # Customizations
-This plugin only changed "plugins" in semantic release configuration. To add or override semantic release default settings. Add .releaserc to your project root:
+To add or override semantic release default settings. Add `.releaserc` to your project root:
 ```
 {
   "branches": [
@@ -69,4 +69,4 @@ Or change commands arguments in the pipeline:
     git_password:
       from_secret: git_password
 ```
-Please check [index.js](/../../semantic-release-drone/index.js) for changes made by the plugin
+Please check `index.js` for changes made by the plugin.
