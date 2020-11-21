@@ -1,0 +1,101 @@
+kind: pipeline
+type: docker
+name: PR pipeline
+
+volumes:
+- name: dockersock
+  temp: {}
+
+services:
+- name: docker
+  image: docker:dind
+  privileged: true
+  volumes:
+  - name: dockersock
+    path: /var/run
+
+steps:
+- name: lint
+  image: hub.docker.local/drone-commitlint
+  
+- name: build
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run
+  commands:
+  - sleep 5 # give docker enough time to start
+  - docker build -t drone-semantic-release:${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT_SHA:0:8} .
+
+- name: test
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run
+  commands:
+    - "docker run drone-semantic-release:${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT_SHA:0:8} --help"
+
+trigger:
+  event:
+  - pull_request
+
+---
+kind: pipeline
+type: docker
+name: CI pipeline
+
+steps:
+- name: publish
+  image: plugins/docker
+  settings:
+    registry: hub.docker.local
+    insecure: true
+    username:
+      from_secret: nexus_user
+    password:
+      from_secret: nexus_password
+    repo: hub.docker.local/drone-semantic-release
+    dockerfile: dockerfile
+    tags: ${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT_SHA:0:8}
+    purge: true
+
+- name: test
+  image: hub.docker.local/drone-semantic-release:${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT_SHA:0:8}
+  command: [ "--help" ]
+
+trigger:
+  branch: 
+  - master
+  event: 
+  - push
+
+---
+kind: pipeline
+type: docker
+name: CD pipeline
+
+steps:
+- name: versioning
+  image: hub.docker.local/drone-semantic-release
+  settings:
+    git_login:
+      from_secret: git_user
+    git_password:
+      from_secret: git_password
+
+- name: publish
+  image: plugins/docker
+  settings:
+    registry: hub.docker.local
+    insecure: true
+    username:
+      from_secret: nexus_user
+    password:
+      from_secret: nexus_password
+    repo: hub.docker.local/drone-semantic-release
+    dockerfile: dockerfile
+    purge: true
+
+trigger:
+  event: 
+  - promote
