@@ -56,7 +56,9 @@ steps:
       from_secret: nexus_password
     repo: hub.docker.local/drone-semantic-release
     dockerfile: dockerfile
-    tags: ${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT_SHA:0:8}
+    tags: 
+    - latest
+    - ${DRONE_COMMIT_BRANCH}-${DRONE_COMMIT_SHA:0:8}
     purge: true
 
 - name: test
